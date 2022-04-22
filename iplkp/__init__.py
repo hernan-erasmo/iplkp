@@ -1,3 +1,4 @@
+import re
 import sys
 import argparse
 
@@ -21,3 +22,19 @@ def main():
         sys.exit(1)
 
     args = parser.parse_args()
+
+    addr_args = []
+
+    if args.ip_addr:
+        addr_args.append(args.ip_addr)
+    else:
+        re_ip = re.compile("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
+        try:
+            with open(args.filename, "r") as ip_file:
+                lines = ip_file.readlines()
+        except (FileNotFoundError, OSError) as err:
+            print(f"Couldn't read file {args.filename}: {str(err)}")
+            sys.exit(1)
+        else:
+            for line in lines:
+                addr_args.extend(re.findall(re_ip, line))
