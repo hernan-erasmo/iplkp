@@ -1,3 +1,4 @@
+import ipaddress
 import re
 import sys
 import argparse
@@ -38,3 +39,22 @@ def main():
         else:
             for line in lines:
                 addr_args.extend(re.findall(re_ip, line))
+
+    valid_addrs = []
+    invalid_addrs = []
+    for addr in addr_args:
+        try:
+            valid_addrs.append(ipaddress.ip_address(addr))
+        except ValueError as ve:
+            invalid_addrs.append(addr)
+            continue
+
+    if invalid_addrs:
+        print(f"The following {len(invalid_addrs)} invalid IP addresses were found on input: {invalid_addrs}")
+
+    if valid_addrs:
+        print(f"Found {len(valid_addrs)} valid IP addresses on input: {valid_addrs}")
+        sys.exit(0)
+    else:
+        print(f"No valid addresses found on input")
+        sys.exit(1)
