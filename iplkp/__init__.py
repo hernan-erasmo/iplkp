@@ -4,7 +4,7 @@ import sys
 import argparse
 from iplkp.lookup import lookup
 from iplkp.consts import IPLKP_DESC
-
+import iplkp.utils as utils
 
 def main():
     parser = argparse.ArgumentParser(description=IPLKP_DESC)
@@ -25,30 +25,7 @@ def main():
 
     args = parser.parse_args()
 
-    addr_args = []
-
-    if args.ip_addr:
-        addr_args.append(args.ip_addr)
-    else:
-        re_ip = re.compile("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
-        try:
-            with open(args.filename, "r") as ip_file:
-                lines = ip_file.readlines()
-        except (FileNotFoundError, OSError) as err:
-            print(f"Couldn't read file {args.filename}: {str(err)}")
-            sys.exit(1)
-        else:
-            for line in lines:
-                addr_args.extend(re.findall(re_ip, line))
-
-    valid_addrs = []
-    invalid_addrs = []
-    for addr in addr_args:
-        try:
-            valid_addrs.append(str(ipaddress.ip_address(addr)))
-        except ValueError as ve:
-            invalid_addrs.append(addr)
-            continue
+    valid_addrs, invalid_addrs = utils.parse_address_args(args)
 
     if invalid_addrs:
         print(f"The following {len(invalid_addrs)} invalid IP addresses were found on input: {invalid_addrs}")
@@ -61,7 +38,9 @@ def main():
 
     # TODO: caching begins here, removing addresses in cache from valid_addrs.
     results = lookup(valid_addrs, just_rdap=args.just_rdap, just_geo=args.just_geo)
-    # TODO: caching ends here, injecting cached IPs into results.
+    # TODO: caching ends here
+    #   TODO: injecting cached IPs into results.
+    #   TODO: saving new results
 
     print(results)
     sys.exit(0)
