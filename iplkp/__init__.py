@@ -2,6 +2,7 @@ import ipaddress
 import re
 import sys
 import argparse
+from iplkp.lookup import lookup
 
 DESC = "iplkp - Geo IP and RDAP lookup tool"
 
@@ -44,7 +45,7 @@ def main():
     invalid_addrs = []
     for addr in addr_args:
         try:
-            valid_addrs.append(ipaddress.ip_address(addr))
+            valid_addrs.append(str(ipaddress.ip_address(addr)))
         except ValueError as ve:
             invalid_addrs.append(addr)
             continue
@@ -54,7 +55,13 @@ def main():
 
     if valid_addrs:
         print(f"Found {len(valid_addrs)} valid IP addresses on input: {valid_addrs}")
-        sys.exit(0)
     else:
         print(f"No valid addresses found on input")
         sys.exit(1)
+
+    # TODO: caching begins here, removing addresses in cache from valid_addrs.
+    results = lookup(valid_addrs, just_rdap=args.just_rdap, just_geo=args.just_geo)
+    # TODO: caching ends here, injecting cached IPs into results.
+
+    print(results)
+    sys.exit(0)
