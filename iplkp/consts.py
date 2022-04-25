@@ -1,3 +1,4 @@
+IPLKP_DESC = "iplkp - Geo IP and RDAP lookup tool"
 GEO_IP_LOOKUP_TASK_NAME = "ip_lookup"
 GEO_IP_LOOKUP_TASK_PREFIX = f"{GEO_IP_LOOKUP_TASK_NAME}_task_"
 RDAP_LOOKUP_TASK_NAME = "rdap_lookup"
