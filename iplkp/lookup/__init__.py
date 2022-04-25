@@ -1,13 +1,18 @@
 import asyncio
 import time
 from iplkp.lookup.geo_ip import geo_ip_lookup
-from iplkp.consts import GEO_IP_LOOKUP_TASK_NAME
+from iplkp.lookup.rdap import rdap_lookup
+from iplkp.consts import GEO_IP_LOOKUP_TASK_NAME, RDAP_LOOKUP_TASK_NAME
 
 
 async def run_queries(ip_list, just_rdap=False, just_geo=False):
     tasks = []
    
     query_all = not any([just_rdap, just_geo])
+
+    if just_rdap or query_all:
+        task_rdap = asyncio.create_task(rdap_lookup(ip_list), name=RDAP_LOOKUP_TASK_NAME)
+        tasks.append(task_rdap)
 
     if just_geo or query_all:
         task_ip = asyncio.create_task(geo_ip_lookup(ip_list), name=GEO_IP_LOOKUP_TASK_NAME)
