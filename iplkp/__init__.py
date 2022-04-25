@@ -3,11 +3,11 @@ import re
 import sys
 import argparse
 from iplkp.lookup import lookup
+from iplkp.consts import IPLKP_DESC
 
-DESC = "iplkp - Geo IP and RDAP lookup tool"
 
 def main():
-    parser = argparse.ArgumentParser(description=DESC)
+    parser = argparse.ArgumentParser(description=IPLKP_DESC)
     main_group = parser.add_mutually_exclusive_group(required=True)
     main_group.add_argument("-i", "--ip-address", dest="ip_addr", metavar="IP_ADDR", help="Fetch information for a single given IP address")
     main_group.add_argument("-b", "--bulk", dest="filename", metavar="INPUT_FILE", help="Read IP addresses in bulk from INPUT_FILE")
