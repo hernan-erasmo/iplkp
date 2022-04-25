@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
 import json
-from iplkp.lookup.utils import show_remaining_tasks
+from iplkp.utils import show_remaining_tasks
 from iplkp.consts import GEO_IP_LOOKUP_TASK_PREFIX, IPLKP_EXCEPTION_KEY
 
 GEO_IP_LOOKUP_ERROR_KEY = "iplkp_geo_ip_error"

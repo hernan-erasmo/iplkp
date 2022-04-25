@@ -1,7 +1,7 @@
 import asyncio
 import aiohttp
 from itertools import cycle
-from iplkp.lookup.utils import show_remaining_tasks
+from iplkp.utils import show_remaining_tasks
 from iplkp.consts import RDAP_CONNECTIONS_LIMIT, RDAP_CONNECTIONS_LIMIT_PER_HOST, RDAP_LOOKUP_TASK_PREFIX, IPLKP_EXCEPTION_KEY
 
 RDAP_LOOKUP_ERROR_KEY = "iplkp_rdap_error"
