@@ -125,11 +125,11 @@ def parse_address_args(args):
 
     if invalid_addrs:
         print(f"Found {len(invalid_addrs)} invalid IP addresses on " +\
-            "input: {invalid_addrs}")
+            f"input: {invalid_addrs}")
 
     if valid_addrs:
         print(f"Found {len(valid_addrs)} valid IP addresses on " + \
-            "input: {valid_addrs}")
+            f"input: {valid_addrs}")
     else:
         print("No valid addresses found on input")
 
