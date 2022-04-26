@@ -10,15 +10,9 @@ def main():
         print(f"{e}")
         sys.exit(1)
     else:
-        valid_addrs, invalid_addrs = utils.parse_address_args(args)
+        valid_addrs = utils.parse_address_args(args)
 
-    if invalid_addrs:
-        print(f"The following {len(invalid_addrs)} invalid IP addresses were found on input: {invalid_addrs}")
-
-    if valid_addrs:
-        print(f"Found {len(valid_addrs)} valid IP addresses on input: {valid_addrs}")
-    else:
-        print(f"No valid addresses found on input")
+    if not valid_addrs:
         sys.exit(1)
 
     results = lookup(valid_addrs, just_rdap=args.just_rdap, just_geo=args.just_geo, use_cache=args.use_cache)
