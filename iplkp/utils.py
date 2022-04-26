@@ -86,7 +86,7 @@ def parse_address_args(args):
     if args.ip_addr:
         addr_args.append(args.ip_addr)
     elif args.filename:
-        re_ip = re.compile("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
+        re_ip = re.compile(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
         try:
             with open(args.filename, "r") as ip_file:
                 lines = ip_file.readlines()
