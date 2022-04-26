@@ -1,7 +1,8 @@
+import argparse
 import asyncio
 import ipaddress
 import re
-from iplkp.consts import GEO_IP_LOOKUP_TASK_PREFIX, RDAP_LOOKUP_TASK_PREFIX
+from iplkp.consts import GEO_IP_LOOKUP_TASK_PREFIX, RDAP_LOOKUP_TASK_PREFIX, IPLKP_DESC
 
 
 def show_remaining_tasks():
@@ -13,6 +14,26 @@ def show_remaining_tasks():
     print(f"Remaining queries: {remaining_tasks}     \r", end="", flush=True)
 
 
+def parse_args(supplied_args):
+    parser = argparse.ArgumentParser(description=IPLKP_DESC)
+    main_group = parser.add_mutually_exclusive_group(required=True)
+    main_group.add_argument("-i", "--ip-address", dest="ip_addr", metavar="IP_ADDR", help="Fetch information for a single given IP address")
+    main_group.add_argument("-b", "--bulk", dest="filename", metavar="INPUT_FILE", help="Read IP addresses in bulk from INPUT_FILE")
+
+    query_group = parser.add_argument_group(title="Available queries")
+    query_group.add_argument("-g", "--geo-ip", dest="just_geo", help="Only query Geo IP information for the given address or list of addresses", action="store_true")
+    query_group.add_argument("-r", "--rdap", dest="just_rdap", help="Only query RDAP information for the given address or list of addresses", action="store_true")
+
+    parser.add_argument("-o", "--output", dest="save_output", metavar="OUTPUT_FILE", help="Write output to a given OUTPUT_FILE")
+    parser.add_argument("-f", "--force", dest="overwrite", help="Overwrite contents of OUTPUT_FILE if it exists", action="store_true")
+
+    if len(supplied_args) == 1:
+        parser.print_help()
+        return None
+    else:
+        return parser.parse_args()
+
+
 def parse_address_args(args):
     addr_args = []
     valid_addrs = []
@@ -20,7 +41,7 @@ def parse_address_args(args):
 
     if args.ip_addr:
         addr_args.append(args.ip_addr)
-    else:
+    elif args.filename:
         re_ip = re.compile("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
         try:
             with open(args.filename, "r") as ip_file:
@@ -31,6 +52,8 @@ def parse_address_args(args):
         else:
             for line in lines:
                 addr_args.extend(re.findall(re_ip, line))
+    else:
+        return valid_addrs, invalid_addrs
 
     for addr in addr_args:
         try:
