@@ -1,13 +1,22 @@
+"""
+The cache module contains all logic related to iplkp's
+caching features.
+"""
 import json
-
 from iplkp.consts import RDAP_LOOKUP_TASK_NAME, GEO_IP_LOOKUP_TASK_NAME, CACHE_DATASOURCE
 
 
 class IplkpCacheException(Exception):
-    pass
+    """
+    Raised when there's an error during initialization or
+    use of the cache.
+    """
 
 
 class IplkpCache():
+    """
+    Contains utility methods for creating and updating an iplkp cache data source.
+    """
     def __init__(self):
         self._data_source = self._init_from_file()
 
@@ -40,12 +49,23 @@ class IplkpCache():
             return file_structure
 
     def get_rdap(self, ip_address):
+        """
+        Indicates whether or not the given ip_address is cached within this instance
+        rdap data
+        """
         return ip_address in self._data_source[RDAP_LOOKUP_TASK_NAME]
 
     def get_geo_ip(self, ip_address):
+        """
+        Indicates whether or not the given ip_address is cached within this instance
+        geo ip data
+        """
         return ip_address in self._data_source[GEO_IP_LOOKUP_TASK_NAME]
 
     def update(self, results):
+        """
+        Updates the current cache instance with the given results
+        """
         for key in results.keys():
             self._data_source[key] |= results[key]
         with open(CACHE_DATASOURCE, "w", encoding="utf-8") as new_data_source:
