@@ -1,3 +1,4 @@
+import json
 import sys
 from iplkp.lookup import lookup
 from iplkp.consts import IPLKP_DESC
@@ -38,6 +39,7 @@ def main():
         else:
             results = cached_data
 
-    # TODO: implement write results to output file
-    print(results)
+    if args.save_output:
+        with open(args.save_output, "w") as output:
+            json.dump(results, output)
     sys.exit(0)
