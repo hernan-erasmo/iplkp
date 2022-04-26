@@ -1,3 +1,8 @@
+"""
+iplkp utils module, which contains utility and helper
+functions used across the application
+"""
+
 import argparse
 import asyncio
 import ipaddress
@@ -7,10 +12,16 @@ from iplkp.consts import GEO_IP_LOOKUP_TASK_PREFIX, RDAP_LOOKUP_TASK_PREFIX, IPL
 
 
 class IplkpArgumentException(Exception):
-    pass
+    """
+    Rased when there's an error while parsing input arguments
+    """
 
 
 def show_remaining_tasks():
+    """
+    Utility function that scans the list of tasks within the current event loop
+    and shows a counter of RDAP and Geo IP tasks pending.
+    """
     def is_lookup_task(task):
         is_ip_lookup = task.get_name().startswith(GEO_IP_LOOKUP_TASK_PREFIX)
         is_rdap_lookup = task.get_name().startswith(RDAP_LOOKUP_TASK_PREFIX)
@@ -20,6 +31,9 @@ def show_remaining_tasks():
 
 
 def parse_args(supplied_args):
+    """
+    Function that contains the input arguments parsing logic
+    """
     parser = argparse.ArgumentParser(description=IPLKP_DESC)
     main_group = parser.add_mutually_exclusive_group(required=True)
     main_group.add_argument("-i",
@@ -79,6 +93,9 @@ def parse_args(supplied_args):
 
 
 def parse_address_args(args):
+    """
+    Function that contains the business rules related to IP address parsing
+    """
     addr_args = []
     valid_addrs = []
     invalid_addrs = []
