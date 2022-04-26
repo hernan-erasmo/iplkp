@@ -19,10 +19,10 @@ class IplkpCache():
 
     def _init_from_file(self):
         try:
-            with open(CACHE_DATASOURCE, "r") as data_source:
+            with open(CACHE_DATASOURCE, "r", encoding="utf-8") as data_source:
                 data = json.load(data_source)
                 required_keys = [RDAP_LOOKUP_TASK_NAME, GEO_IP_LOOKUP_TASK_NAME]
-                if not all([key in data for key in required_keys]):
+                if not all(key in data for key in required_keys):
                     raise ValueError("Invalid cache file")
         except Exception as exception:
             print(f"Unable to read from cache data source ({exception})." + \
@@ -31,7 +31,7 @@ class IplkpCache():
             return data
 
         try:
-            with open(CACHE_DATASOURCE, "w") as data_source:
+            with open(CACHE_DATASOURCE, "w", encoding="utf-8") as data_source:
                 file_structure = self._init_empty()
                 json.dump(file_structure, data_source)
         except Exception as exception:
@@ -48,7 +48,7 @@ class IplkpCache():
     def update(self, results):
         for key in results.keys():
             self._data_source[key] |= results[key]
-        with open(CACHE_DATASOURCE, "w") as new_data_source:
+        with open(CACHE_DATASOURCE, "w", encoding="utf-8") as new_data_source:
             json.dump(self._data_source, new_data_source)
 
     def find_all(self, addresses, just_rdap=False, just_geo=False):
