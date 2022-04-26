@@ -1,8 +1,6 @@
 import json
 import sys
 from iplkp.lookup import lookup
-from iplkp.consts import IPLKP_DESC
-from iplkp.cache import IplkpCache, IplkpCacheException
 import iplkp.utils as utils
 
 def main():
@@ -23,23 +21,11 @@ def main():
         print(f"No valid addresses found on input")
         sys.exit(1)
 
-    if args.no_cache:
-        results = lookup(valid_addrs, just_rdap=args.just_rdap, just_geo=args.just_geo)
-    else:
-        try:
-            cache = IplkpCache()
-        except IplkpCacheException as ex:
-            print(f"{ex}. This is not an issue with iplkp. If the problem persists, try calling iplkp with --no-cache")
-        cached_data, missing_IPs = cache.find_all(valid_addrs, just_rdap=args.just_rdap, just_geo=args.just_geo)
-        if missing_IPs:
-            results = lookup(missing_IPs, just_rdap=args.just_rdap, just_geo=args.just_geo)
-            cache.update(results)
-            for key in results.keys():
-                results[key] |= cached_data[key]
-        else:
-            results = cached_data
+    results = lookup(valid_addrs, just_rdap=args.just_rdap, just_geo=args.just_geo, use_cache=args.use_cache)
 
     if args.save_output:
         with open(args.save_output, "w") as output:
             json.dump(results, output)
+    else:
+        print(results)
     sys.exit(0)

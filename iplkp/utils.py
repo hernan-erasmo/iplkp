@@ -31,7 +31,7 @@ def parse_args(supplied_args):
 
     parser.add_argument("-o", "--output", dest="save_output", metavar="OUTPUT_FILE", help="Write output to a given OUTPUT_FILE")
     parser.add_argument("-f", "--force", dest="overwrite", help="Overwrite contents of OUTPUT_FILE if it exists", action="store_true")
-    parser.add_argument("-c", "--no-cache", dest="no_cache", help="Do not use cache to fetch results. Do not update it after getting IP information", action="store_true")
+    parser.add_argument("-c", "--no-cache", dest="use_cache", help="Do not use cache to fetch results. Do not update it after getting IP information", default=True, action="store_false")
 
     if len(supplied_args) == 1:
         parser.print_help()
