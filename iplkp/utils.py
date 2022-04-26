@@ -88,7 +88,7 @@ def parse_address_args(args):
     elif args.filename:
         re_ip = re.compile(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
         try:
-            with open(args.filename, "r") as ip_file:
+            with open(args.filename, "r", encoding="utf-8") as ip_file:
                 lines = ip_file.readlines()
         except (FileNotFoundError, OSError) as err:
             print(f"Couldn't read file {args.filename}: {str(err)}")
@@ -114,6 +114,6 @@ def parse_address_args(args):
         print(f"Found {len(valid_addrs)} valid IP addresses on " + \
             "input: {valid_addrs}")
     else:
-        print(f"No valid addresses found on input")
+        print("No valid addresses found on input")
 
     return valid_addrs
