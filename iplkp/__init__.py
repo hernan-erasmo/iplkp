@@ -1,6 +1,7 @@
 import sys
 from iplkp.lookup import lookup
 from iplkp.consts import IPLKP_DESC
+from iplkp.cache import IplkpCache, IplkpCacheException
 import iplkp.utils as utils
 
 def main():
@@ -21,11 +22,22 @@ def main():
         print(f"No valid addresses found on input")
         sys.exit(1)
 
-    # TODO: caching begins here, removing addresses in cache from valid_addrs.
-    results = lookup(valid_addrs, just_rdap=args.just_rdap, just_geo=args.just_geo)
-    # TODO: caching ends here
-    #   TODO: injecting cached IPs into results.
-    #   TODO: saving new results
+    if args.no_cache:
+        results = lookup(valid_addrs, just_rdap=args.just_rdap, just_geo=args.just_geo)
+    else:
+        try:
+            cache = IplkpCache()
+        except IplkpCacheException as ex:
+            print(f"{ex}. This is not an issue with iplkp. If the problem persists, try calling iplkp with --no-cache")
+        cached_data, missing_IPs = cache.find_all(valid_addrs, just_rdap=args.just_rdap, just_geo=args.just_geo)
+        if missing_IPs:
+            results = lookup(missing_IPs, just_rdap=args.just_rdap, just_geo=args.just_geo)
+            cache.update(results)
+            for key in results.keys():
+                results[key] |= cached_data[key]
+        else:
+            results = cached_data
 
+    # TODO: implement write results to output file
     print(results)
     sys.exit(0)
