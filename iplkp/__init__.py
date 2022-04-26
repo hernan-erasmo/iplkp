@@ -4,11 +4,13 @@ from iplkp.consts import IPLKP_DESC
 import iplkp.utils as utils
 
 def main():
-    if not (args := utils.parse_args(sys.argv)):
-        print(f"Missing required arguments")
+    try:
+        args = utils.parse_args(sys.argv)
+    except utils.IplkpArgumentException as e:
+        print(f"{e}")
         sys.exit(1)
-
-    valid_addrs, invalid_addrs = utils.parse_address_args(args)
+    else:
+        valid_addrs, invalid_addrs = utils.parse_address_args(args)
 
     if invalid_addrs:
         print(f"The following {len(invalid_addrs)} invalid IP addresses were found on input: {invalid_addrs}")

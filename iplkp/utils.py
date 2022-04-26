@@ -1,8 +1,13 @@
 import argparse
 import asyncio
 import ipaddress
+import os
 import re
 from iplkp.consts import GEO_IP_LOOKUP_TASK_PREFIX, RDAP_LOOKUP_TASK_PREFIX, IPLKP_DESC
+
+
+class IplkpArgumentException(Exception):
+    pass
 
 
 def show_remaining_tasks():
@@ -29,9 +34,14 @@ def parse_args(supplied_args):
 
     if len(supplied_args) == 1:
         parser.print_help()
-        return None
-    else:
-        return parser.parse_args()
+        raise IplkpArgumentException("No arguments supplied")
+
+    args = parser.parse_args()
+    output_file_exists = args.save_output and os.path.isfile(args.save_output)
+    if output_file_exists and not args.overwrite:
+        raise IplkpArgumentException("Output file already exists. If you want to overwrite, you must pass the -f, --force flag.")
+
+    return args
 
 
 def parse_address_args(args):
