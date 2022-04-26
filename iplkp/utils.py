@@ -102,7 +102,7 @@ def parse_address_args(args):
     for addr in addr_args:
         try:
             valid_addrs.append(str(ipaddress.ip_address(addr)))
-        except ValueError as ve:
+        except ValueError:
             invalid_addrs.append(addr)
             continue
 
