@@ -83,7 +83,7 @@ def parse_args(supplied_args):
         parser.print_help()
         raise IplkpArgumentException("No arguments supplied")
 
-    args = parser.parse_args()
+    args = parser.parse_args(supplied_args)
     output_file_exists = args.save_output and os.path.isfile(args.save_output)
     if output_file_exists and not args.overwrite:
         raise IplkpArgumentException("Output file already exists. If you want to " + \
