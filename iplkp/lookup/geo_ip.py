@@ -1,3 +1,7 @@
+"""
+This module contains all features related to querying information
+regarding Geo IP data.
+"""
 import asyncio
 import json
 import aiohttp
@@ -20,6 +24,16 @@ def generate_buckets(lst, bucket_size):
         yield lst[i:i + bucket_size]
 
 def parse_ip_lookup_content(content):
+    """Transforms raw json data into ip_lookup formatted output.
+
+    Args:
+      content:
+        Raw HTTP response json data.
+
+    Returns:
+      A dict where keys are IP addresses and their values are dicts
+      that contain Geo IP information for each IP.
+    """
     results = {}
     for elem in content:
         query = elem["query"]
@@ -35,6 +49,22 @@ def parse_ip_lookup_content(content):
     return results
 
 async def fetch_ip_batch(ip_bucket, delay, session):
+    """Fetches Geo IP data from 3rd party API.
+
+    This asynchronous task sends a POST request that contains
+    one or many IP addresses, and parse the response before returning it.
+
+    Args:
+      ip_bucket:
+        List of IP addresses to include in the request
+      delay:
+        Number of seconds to wait until being available to run
+      session:
+        Aiohttp session to send the request from
+
+    Returns:
+      Dicts containing information about IPs and their geo ip data.
+    """
     # hack to avoid having to deal with the API's rate limit dynamically.
     # We just schedule the requests at a rate that will never go over the limit
     await asyncio.sleep(delay)
@@ -48,6 +78,24 @@ async def fetch_ip_batch(ip_bucket, delay, session):
         return {IPLKP_EXCEPTION_KEY: f"Exception while calling fetch_ip_batch: {repr(exception)}"}
 
 async def geo_ip_lookup(ip_list):
+    """Sets up asynchronous tasks for fetching Geo IP information.
+
+    Args:
+      ip_list:
+        List of ip addresses
+
+    Returns:
+      A dict mapping a geo ip key to dicts containing information about IPs
+      and their geo ip data. Example:
+
+      {"ip_lookup":
+        {"192.168.1.1":
+          {"country": ...}
+        , "8.8.8.8": {
+          {"country": ...}
+        }
+      }
+    """
     tasks = []
     timeout = aiohttp.ClientTimeout(total=None, sock_connect=15, sock_read=15)
     connector = aiohttp.TCPConnector(limit=1, limit_per_host=1, force_close=True)
